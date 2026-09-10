@@ -54,8 +54,21 @@
     .op .name { color: #a3182a; } .av .name { color: #1b4f8f; }
     .desc { margin: 0; text-align: center; color: var(--brown); font-size: 15px; line-height: 1.4; }
     .cta { margin-top: auto; font-weight: 700; color: var(--brown-dark); background: var(--parchment-dark); border: 2px solid var(--tan); border-radius: 8px; padding: 8px 18px; }
-    .note { margin-top: 36px; max-width: 560px; text-align: center; color: rgba(255, 255, 255, .85); font-size: 14px; line-height: 1.5; background: rgba(12, 18, 34, .6); padding: 12px 18px; border-radius: 12px; }
-    .note b { color: #ffe9a8; }
+    .account { margin-top: 34px; width: 100%; max-width: 420px; padding: 20px 22px 18px; border-radius: 14px; border: 3px solid var(--tan); color: var(--ink);
+      background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .55), transparent 60%), linear-gradient(180deg, #fdf7e4 0%, var(--parchment) 45%, #e7d7a8 100%);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, .38), 0 0 0 1px rgba(60, 40, 15, .35); text-align: center; }
+    .acct-title { font-family: 'Lilita One', cursive; color: var(--brown-dark); letter-spacing: 1px; font-size: 22px; margin: 0 0 6px; }
+    .acct-hint { margin: 0 0 12px; font-size: 13.5px; color: var(--brown); line-height: 1.4; }
+    .tabs { display: flex; gap: 6px; justify-content: center; margin-bottom: 12px; }
+    .tab { font: inherit; font-weight: 700; font-size: 14px; padding: 6px 16px; border-radius: 8px; border: 2px solid var(--tan); background: var(--parchment); color: var(--brown); cursor: pointer; }
+    .tab.on { background: var(--brown-dark); color: #fff; border-color: var(--brown-dark); }
+    #acct-form { display: flex; flex-direction: column; gap: 8px; }
+    #acct-form input { font: inherit; font-size: 16px; padding: 10px 12px; border-radius: 8px; border: 2px solid var(--tan); background: #fffdf5; color: var(--ink); }
+    #acct-form button, .ghost { font: inherit; font-weight: 700; font-size: 15px; padding: 10px; border-radius: 8px; border: 2px solid var(--tan); background: var(--parchment-dark); color: var(--brown-dark); cursor: pointer; }
+    #acct-form button:disabled { opacity: .6; cursor: default; }
+    .acct-error { margin: 10px 0 0; color: #b23c39; font-weight: 700; font-size: 14px; }
+    .acct-stats { margin: 4px 0 8px; font-size: 14px; color: var(--brown-dark); }
+    .acct-stats b { color: var(--brown-dark); }
     footer { margin-top: 30px; color: rgba(255, 255, 255, .7); font-size: 12px; text-align: center; }
     footer a { color: #ffe9a8; }
   </style>
@@ -63,7 +76,6 @@
 <body>
   <div class="bg" aria-hidden="true"><img src="./img/onepiece.jpg" alt="" /><img src="./img/avatar.jpg" alt="" /></div>
   <h1>DLE GAMES</h1>
-  <p class="sub">Guess the daily character. One account, two worlds.</p>
 
   <nav class="games">
     <a class="card op" href="./onepiecedle/">
@@ -200,14 +212,96 @@
     </a>
   </nav>
 
-  <p class="note">
-    <b>One sign-in.</b> Join the leaderboard in either game with a pseudonym and password, and you're signed in
-    on the other too. Streaks and rankings are kept per game.
-  </p>
+  <section class="account panel" id="account">
+    <div id="signed-out">
+      <h2 class="acct-title">Leaderboard account</h2>
+      <p class="acct-hint">One pseudonym and password for both games. No email — and no reset, so pick a password you won't lose.</p>
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab on" data-mode="join">Join</button>
+        <button type="button" class="tab" data-mode="login">Sign in</button>
+      </div>
+      <form id="acct-form" autocomplete="on">
+        <input id="acct-name" type="text" placeholder="Pseudonym" autocomplete="username" minlength="2" maxlength="20" required />
+        <input id="acct-pass" type="password" placeholder="Password (8+ characters)" autocomplete="current-password" minlength="8" required />
+        <button type="submit" id="acct-submit">Join</button>
+      </form>
+      <p class="acct-error" id="acct-error" hidden></p>
+    </div>
+    <div id="signed-in" hidden>
+      <h2 class="acct-title">Signed in as <span id="acct-who"></span></h2>
+      <p class="acct-stats" id="acct-stats"></p>
+      <p class="acct-hint">You're signed in on OnePieceDle and AvatarDle too.</p>
+      <button type="button" id="acct-logout" class="ghost">Sign out</button>
+    </div>
+  </section>
 
   <footer>
     Non-commercial fan projects · <a href="https://github.com/hugoBourretDesmarais/onepiecedle">onepiecedle</a>
     · <a href="https://github.com/hugoBourretDesmarais/avatardle">avatardle</a> on GitHub
   </footer>
+
+  <script>
+    const API = { op: 'https://onepiecedle-api.hugo-bourret-desmarais.workers.dev', av: 'https://avatardle-api.hugo-bourret-desmarais.workers.dev' }
+    const KEY = 'dle:account'
+    const $ = id => document.getElementById(id)
+    let mode = 'join'
+
+    // Same derivation as both games: the password never leaves the browser.
+    async function deriveKey(name, password) {
+      const enc = new TextEncoder()
+      const salt = await crypto.subtle.digest('SHA-256', enc.encode(`onepiecedle:${name.trim().toLowerCase()}`))
+      const material = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits'])
+      const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: new Uint8Array(salt), iterations: 600000 }, material, 256)
+      return [...new Uint8Array(bits)].map(b => b.toString(16).padStart(2, '0')).join('')
+    }
+    const post = (base, path, body) => fetch(base + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(async r => { const d = await r.json().catch(() => null); return r.ok ? d : { error: d?.error || `Request failed (${r.status}).` } })
+      .catch(() => ({ error: 'Could not reach the leaderboard. Check your connection.' }))
+
+    function loadAccount() { try { return JSON.parse(localStorage.getItem(KEY)) } catch { return null } }
+
+    async function render() {
+      const acct = loadAccount()
+      $('signed-out').hidden = !!acct
+      $('signed-in').hidden = !acct
+      if (!acct) return
+      $('acct-who').textContent = acct.name
+      $('acct-stats').textContent = ''
+      const q = new URLSearchParams({ token: acct.token })
+      const [op, av] = await Promise.all([API.op, API.av].map(b => fetch(`${b}/me?${q}`).then(r => r.ok ? r.json() : null).catch(() => null)))
+      if (op === null && av === null) return
+      const line = (label, m) => m ? `${label}: ${m.wins} win${m.wins === 1 ? '' : 's'}${m.streak ? `, ${m.streak}-day streak` : ''}` : `${label}: —`
+      $('acct-stats').innerHTML = `<b>${line('OnePieceDle', op)}</b><br /><b>${line('AvatarDle', av)}</b>`
+    }
+
+    document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+      mode = t.dataset.mode
+      document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x === t))
+      $('acct-submit').textContent = mode === 'join' ? 'Join' : 'Sign in'
+      $('acct-pass').autocomplete = mode === 'join' ? 'new-password' : 'current-password'
+      $('acct-error').hidden = true
+    }))
+
+    $('acct-form').addEventListener('submit', async e => {
+      e.preventDefault()
+      const name = $('acct-name').value, password = $('acct-pass').value
+      const btn = $('acct-submit'); btn.disabled = true; btn.textContent = 'Working…'; $('acct-error').hidden = true
+      const r = await post(API.op, mode === 'join' ? '/register' : '/login', { name, key: await deriveKey(name, password) })
+      btn.disabled = false; btn.textContent = mode === 'join' ? 'Join' : 'Sign in'
+      if (r.error) { $('acct-error').textContent = r.error; $('acct-error').hidden = false; return }
+      $('acct-pass').value = ''
+      localStorage.setItem(KEY, JSON.stringify({ id: r.id, name: r.name, token: r.token }))
+      render()
+    })
+
+    $('acct-logout').addEventListener('click', async () => {
+      const acct = loadAccount()
+      if (acct?.token) post(API.op, '/logout', { token: acct.token })
+      localStorage.removeItem(KEY)
+      render()
+    })
+
+    render()
+  </script>
 </body>
 </html>
