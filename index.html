@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Daily character guessing games: OnePieceDle and AvatarDle. One account, two worlds." />
+  <meta name="description" content="Daily guessing games: OnePieceDle, AvatarDle and CHdle. One account, three worlds." />
   <meta name="theme-color" content="#10243d" />
-  <title>Dle games — OnePieceDle &amp; AvatarDle</title>
+  <title>Dle games — OnePieceDle, AvatarDle &amp; CHdle</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
@@ -20,16 +20,16 @@
       display: flex; flex-direction: column; align-items: center; padding: 40px 16px 60px;
     }
     .bg { position: fixed; inset: 0; z-index: -1; display: flex; overflow: hidden; }
-    .bg img { width: 50%; height: 100%; object-fit: cover; filter: saturate(.85) brightness(.6) blur(1.5px); transform: scale(1.04); }
+    .bg img { width: 33.34%; height: 100%; object-fit: cover; filter: saturate(.85) brightness(.6) blur(1.5px); transform: scale(1.04); }
     .bg::after { content: ''; position: absolute; inset: 0; background:
-      linear-gradient(90deg, rgba(15, 34, 56, .15) 0%, rgba(15, 34, 56, .7) 50%, rgba(15, 34, 56, .15) 100%),
+      linear-gradient(90deg, rgba(15, 34, 56, .2) 0%, rgba(15, 34, 56, .65) 33%, rgba(15, 34, 56, .65) 67%, rgba(15, 34, 56, .2) 100%),
       linear-gradient(180deg, rgba(8, 16, 36, .55), rgba(8, 16, 36, .25) 40%, rgba(8, 16, 36, .6)); }
     h1 {
       font-family: 'Lilita One', cursive; font-size: clamp(34px, 7vw, 56px); letter-spacing: 2px;
       color: #fdf3dc; margin: 10px 0 6px; text-shadow: 0 3px 0 #101828, 0 8px 22px rgba(0, 0, 0, .5);
     }
     .sub { color: rgba(255, 255, 255, .8); margin: 0 0 34px; font-size: 17px; text-align: center; }
-    .games { display: grid; align-items: stretch; grid-template-columns: repeat(auto-fit, minmax(260px, 340px)); gap: 26px; justify-content: center; width: 100%; max-width: 760px; }
+    .games { display: grid; align-items: stretch; grid-template-columns: repeat(auto-fit, minmax(250px, 340px)); gap: 26px; justify-content: center; width: 100%; max-width: 1100px; }
     .card {
       position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; text-decoration: none;
       padding: 0 22px 24px; overflow: hidden; border-radius: 14px; border: 3px solid var(--tan); color: var(--ink);
@@ -51,7 +51,7 @@
     .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0, 0, 0, .05), rgba(0, 0, 0, .35)); }
     .emblem { width: 104px; height: 104px; margin-top: -58px; filter: drop-shadow(0 8px 14px rgba(0, 0, 0, .45)); overflow: visible; }
     .name { font-family: 'Lilita One', cursive; font-size: 30px; color: var(--brown-dark); letter-spacing: 1px; margin: 0; }
-    .op .name { color: #a3182a; } .av .name { color: #1b4f8f; }
+    .op .name { color: #a3182a; } .av .name { color: #1b4f8f; } .ch .name { color: #af1e2d; }
     .desc { margin: 0; text-align: center; color: var(--brown); font-size: 15px; line-height: 1.4; }
     .cta { margin-top: auto; font-weight: 700; color: var(--brown-dark); background: var(--parchment-dark); border: 2px solid var(--tan); border-radius: 8px; padding: 8px 18px; }
     .account { margin-top: 34px; width: 100%; max-width: 420px; padding: 20px 22px 18px; border-radius: 14px; border: 3px solid var(--tan); color: var(--ink);
@@ -74,7 +74,7 @@
   </style>
 </head>
 <body>
-  <div class="bg" aria-hidden="true"><img src="./img/onepiece.jpg" alt="" /><img src="./img/avatar.jpg" alt="" /></div>
+  <div class="bg" aria-hidden="true"><img src="./img/onepiece.jpg" alt="" /><img src="./img/avatar.jpg" alt="" /><img src="./img/ch.jpg" alt="" /></div>
   <h1>DLE GAMES</h1>
 
   <nav class="games">
@@ -210,12 +210,54 @@
       <p class="desc">79 characters from Avatar: The Last Airbender. Bending, skills, nations — and a spoiler limit by book.</p>
       <span class="cta">Play →</span>
     </a>
+    <a class="card ch" href="./chdle/">
+      <span class="hero"><picture><source srcset="./img/ch.webp" type="image/webp" /><img src="./img/ch.jpg" alt="" loading="lazy" /></picture></span>
+      <svg class="emblem" viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+          <radialGradient id="ch-crestDisc" cx="38%" cy="30%" r="78%">
+            <stop offset="0%" stop-color="#d9364a" />
+            <stop offset="60%" stop-color="#a71c2b" />
+            <stop offset="100%" stop-color="#6e0f1c" />
+          </radialGradient>
+          <linearGradient id="ch-ringG" x1="0" y1="0" x2="0.4" y2="1">
+            <stop offset="0%" stop-color="#ffffff" />
+            <stop offset="100%" stop-color="#c9d4e4" />
+          </linearGradient>
+          <radialGradient id="ch-sheen" cx="35%" cy="28%" r="80%">
+            <stop offset="0%" stop-color="#fff" stop-opacity=".3" />
+            <stop offset="60%" stop-color="#fff" stop-opacity="0" />
+          </radialGradient>
+          <clipPath id="ch-clip"><circle cx="50" cy="50" r="43" /></clipPath>
+        </defs>
+        <g>
+          <circle cx="50" cy="50" r="50" fill="#0c1424" />
+          <circle cx="50" cy="50" r="48" fill="url(#ch-ringG)" />
+          <circle cx="50" cy="50" r="43" fill="url(#ch-crestDisc)" />
+          <g clip-path="url(#ch-clip)">
+            <rect x="0" y="39" width="100" height="22" fill="#1c2a6b" />
+            <rect x="0" y="39" width="100" height="2.2" fill="#fdfaf0" />
+            <rect x="0" y="58.8" width="100" height="2.2" fill="#fdfaf0" />
+          </g>
+          <g fill="none" stroke="#fdfaf0" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M31 18l31 46c2.6 3.8 6.4 5.4 11.4 4.6l7.6-1.4" />
+            <path d="M69 18L38 64c-2.6 3.8-6.4 5.4-11.4 4.6L19 67.2" />
+          </g>
+          <ellipse cx="50" cy="80.5" rx="10" ry="4.2" fill="#0c1424" />
+          <ellipse cx="50" cy="78.5" rx="10" ry="4.2" fill="#2a3344" />
+          <circle cx="50" cy="50" r="43" fill="url(#ch-sheen)" />
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#0c1424" stroke-width="1.5" opacity=".5" />
+        </g>
+      </svg>
+      <h2 class="name">CHdle</h2>
+      <p class="desc">41 Montréal Canadiens from the 2026-27 camp roster. Position, number, draft, country — and NHL-veterans-only mode.</p>
+      <span class="cta">Play →</span>
+    </a>
   </nav>
 
   <section class="account panel" id="account">
     <div id="signed-out">
       <h2 class="acct-title">Leaderboard account</h2>
-      <p class="acct-hint">One pseudonym and password for both games. No email — and no reset, so pick a password you won't lose.</p>
+      <p class="acct-hint">One pseudonym and password for all three games. No email — and no reset, so pick a password you won't lose.</p>
       <div class="tabs" role="tablist">
         <button type="button" class="tab on" data-mode="join">Join</button>
         <button type="button" class="tab" data-mode="login">Sign in</button>
@@ -230,18 +272,19 @@
     <div id="signed-in" hidden>
       <h2 class="acct-title">Signed in as <span id="acct-who"></span></h2>
       <p class="acct-stats" id="acct-stats"></p>
-      <p class="acct-hint">You're signed in on OnePieceDle and AvatarDle too.</p>
+      <p class="acct-hint">You're signed in on OnePieceDle, AvatarDle and CHdle too.</p>
       <button type="button" id="acct-logout" class="ghost">Sign out</button>
     </div>
   </section>
 
   <footer>
     Non-commercial fan projects · <a href="https://github.com/hugoBourretDesmarais/onepiecedle">onepiecedle</a>
-    · <a href="https://github.com/hugoBourretDesmarais/avatardle">avatardle</a> on GitHub
+    · <a href="https://github.com/hugoBourretDesmarais/avatardle">avatardle</a>
+    · <a href="https://github.com/hugoBourretDesmarais/chdle">chdle</a> on GitHub
   </footer>
 
   <script>
-    const API = { op: 'https://onepiecedle-api.hugo-bourret-desmarais.workers.dev', av: 'https://avatardle-api.hugo-bourret-desmarais.workers.dev' }
+    const API = { op: 'https://onepiecedle-api.hugo-bourret-desmarais.workers.dev', av: 'https://avatardle-api.hugo-bourret-desmarais.workers.dev', ch: 'https://chdle-api.hugo-bourret-desmarais.workers.dev' }
     const KEY = 'dle:account'
     const $ = id => document.getElementById(id)
     let mode = 'join'
@@ -268,10 +311,10 @@
       $('acct-who').textContent = acct.name
       $('acct-stats').textContent = ''
       const q = new URLSearchParams({ token: acct.token })
-      const [op, av] = await Promise.all([API.op, API.av].map(b => fetch(`${b}/me?${q}`).then(r => r.ok ? r.json() : null).catch(() => null)))
-      if (op === null && av === null) return
+      const [op, av, ch] = await Promise.all([API.op, API.av, API.ch].map(b => fetch(`${b}/me?${q}`).then(r => r.ok ? r.json() : null).catch(() => null)))
+      if (op === null && av === null && ch === null) return
       const line = (label, m) => m ? `${label}: ${m.wins} win${m.wins === 1 ? '' : 's'}${m.streak ? `, ${m.streak}-day streak` : ''}` : `${label}: —`
-      $('acct-stats').innerHTML = `<b>${line('OnePieceDle', op)}</b><br /><b>${line('AvatarDle', av)}</b>`
+      $('acct-stats').innerHTML = `<b>${line('OnePieceDle', op)}</b><br /><b>${line('AvatarDle', av)}</b><br /><b>${line('CHdle', ch)}</b>`
     }
 
     document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
